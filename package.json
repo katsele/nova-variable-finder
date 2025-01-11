@@ -39,9 +39,5 @@
         }
       ]
     }
-  },
-  "dependencies": {
-    "@eliagroup-innersource/nova-base": "^3.0.0-beta.12",
-    "@eliagroup-innersource/nova-webcomponents": "^3.0.0-beta.12"
   }
 }
