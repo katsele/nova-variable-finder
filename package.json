@@ -5,7 +5,8 @@
   "main": "code.js",
   "scripts": {
     "build": "webpack",
-    "watch": "npm run build -- --watch"
+    "watch": "npm run build -- --watch",
+    "release": "commit-and-tag-version"
   },
   "author": "",
   "license": "",
@@ -14,6 +15,7 @@
     "@figma/plugin-typings": "*",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
+    "commit-and-tag-version": "^12.5.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.54.0",
     "ts-loader": "^9.5.1",
