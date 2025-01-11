@@ -14,6 +14,7 @@
     "@figma/plugin-typings": "*",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.54.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.7.3"
@@ -38,6 +39,11 @@
           "caughtErrorsIgnorePattern": "^_"
         }
       ]
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
     }
   }
 }
