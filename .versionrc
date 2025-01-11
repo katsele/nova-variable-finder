@@ -1,0 +1,4 @@
+{
+  "packageFiles": ["package.json"],
+  "bumpFiles": ["package.json", "package-lock.json"]
+}
