@@ -1,5 +1,6 @@
 # Nova Variable Finder
-![license](https://badgen.net/github/license/katsele/nova-variable-finder)
+![license](https://badgen.net/github/license/katsele/nova-variable-finder?color=orange) ![version](https://badgen.net/github/tag/katsele/nova-variable-finder?color=blue) ![stars](https://badgen.net/github/stars/katsele/nova-variable-finder?color=green) ![issues](https://badgen.net/github/open-issues/katsele/nova-variable-finder?color=red)
+
 A Figma plugin that helps you find and locate nodes that use specific Figma variables in your document.
 
 ## Features
