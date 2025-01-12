@@ -3,13 +3,13 @@
   "id": "1459614638693682410",
   "api": "1.0.0",
   "main": "dist/code.js",
+  "ui": "dist/ui.html",
   "capabilities": [],
   "enableProposedApi": false,
   "documentAccess": "dynamic-page",
   "editorType": [
     "figma"
   ],
-  "ui": "ui.html",
   "networkAccess": {
     "allowedDomains": [
       "none"
