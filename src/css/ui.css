@@ -1,0 +1,169 @@
+@import "./reset.css";
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+body {
+  font-size: 11px;
+  background-color: var(--figma-color-bg);
+  color: var(--figma-color-text);
+  text-align: center;
+  font-family: "Inter", serif;
+  font-optical-sizing: auto;
+  font-weight: 450;
+  font-style: normal;
+  height: fit-content;
+  font-feature-settings: "liga", "calt";
+}
+
+nav {
+  padding: 1rem 1rem;
+  margin: 0;
+  text-align: left;
+  height: 1.5rem;
+}
+
+svg {
+  height: 100%;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 1rem;
+}
+
+h1, h2 {
+  font-size: 11px;
+  font-weight: 550;
+  color: var(--figma-color-text);
+  text-align: left;
+}
+
+h2 {
+  margin-bottom: 12px;
+}
+
+input {
+  display: flex;
+  width: 100%;
+  padding: 4px;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: stretch;
+  border-radius: 4px;
+  background: var(--figma-color-bg-hover);
+  color: var(--figma-color-text);
+  box-shadow: none;
+  border: 1px solid transparent;
+  font-size: 11px;
+}
+
+input:focus-visible {
+  border: 1px solid var(--figma-color-border-brand);
+  outline: none;
+}
+
+button {
+  display: inline-flex;
+  width: fit-content;
+  padding: 12px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  background: var(--figma-color-bg-brand);
+  color: var(--figma-color-text-onbrand);
+  font-size: 11px;
+  font-weight: 500;
+  box-shadow: none;
+  border: 0;
+  margin-top: 12px;
+}
+
+button:disabled {
+  background: var(--figma-color-bg-disabled);
+  cursor: not-allowed;
+  color: var(--figma-color-text-ondisabled);
+}
+
+.footer {
+  position: fixed;
+  padding: 12px 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--figma-color-text-secondary);
+  background-color: var(--figma-color-bg);
+}
+.footer a {
+  color: var(--figma-color-text-brand);
+}
+
+.heart {
+  color: var(--figma-color-icon-danger);
+}
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-bottom: 32px;
+}
+
+.result-item {
+  text-align: left;
+  padding: 8px;
+  border: 1px solid var(--figma-color-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.result-item:hover {
+  background-color: var(--figma-color-bg-hover);
+}
+
+.no-results {
+  color: var(--figma-color-text-secondary);
+  text-align: left;
+  margin-top: 1rem;
+}
+
+.loading {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--figma-color-text-onbrand);
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  color: var(--figma-color-text-secondary);
+  text-align: left;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.loading-text::before {
+  content: "";
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--figma-color-border-brand);
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
