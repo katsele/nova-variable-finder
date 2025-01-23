@@ -1,0 +1,26 @@
+.tab-navigation {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px;
+  height: fit-content;
+}
+
+.tab-button {
+  border-radius: 4px;
+  padding: 6px 8px;
+  background: var(--figma-color-bg);
+  color: var(--figma-color-text-secondary);
+  font-size: 11px;
+  transition: all 0.2s ease;
+  font-weight: 550;
+  margin: 0;
+}
+
+.tab-button:hover {
+  background: var(--figma-color-bg-hover);
+}
+
+.tab-button.active {
+  background: var(--figma-color-bg-hover);
+  color: var(--figma-color-text);
+}

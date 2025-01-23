@@ -1,0 +1,39 @@
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: left;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: default;
+  transition: background-color 0.2s;
+}
+
+.result-item span {
+  display: inline-block;
+  width: 100%;
+}
+
+.result-item .on-hover {
+  opacity: 0;
+}
+
+.result-item:hover .on-hover {
+  opacity: 1;
+}
+
+.result-item:hover {
+  background-color: var(--figma-color-bg-hover);
+}
+
+.no-results {
+  color: var(--figma-color-text-secondary);
+  padding: 16px 0;
+}

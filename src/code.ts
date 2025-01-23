@@ -8,12 +8,13 @@
 // You can access browser APIs in the <script> tag inside "ui.html" which has a
 // full browser environment (See https://www.figma.com/plugin-docs/how-plugins-run).
 
-import { findNodesUsingVariable, getNodePath, switchToNodePage } from "./utils/utils";
+import { findNodesUsingVariable, getNodePath, switchToNodePage } from "./utils/node-finder";
+import { findDeletedVariables } from "./utils/deleted-variables-finder";
 
 // This shows the HTML page in "ui.html".
 figma.showUI(__html__, {
   width: 350,
-  height: 300,
+  height: 500,
   title: "Nova Variable Finder",
   themeColors: true,
 });
@@ -23,7 +24,11 @@ figma.showUI(__html__, {
  * @param msg - The message object containing the type and data from the UI
  */
 figma.ui.onmessage = async (msg) => {
-  figma.ui.resize(350, 500);
+  if (msg.type === "resize") {
+    figma.ui.resize(msg.width, msg.height);
+    return;
+  }
+  
   if (msg.type === "find-variable-nodes") {
     const variable = msg.id;
     let variableID;
@@ -49,6 +54,23 @@ figma.ui.onmessage = async (msg) => {
         name: getNodePath(node),
       })),
     });
+  } else if (msg.type === "find-deleted-variables") {
+    try {
+      const { fileKey, accessToken } = msg;
+      if (!fileKey) {
+        throw new Error("File key is required");
+      }
+      const deletedVars = await findDeletedVariables(fileKey, accessToken);
+      figma.ui.postMessage({
+        type: "deletedVariablesResults",
+        variables: deletedVars
+      });
+    } catch (error) {
+      figma.ui.postMessage({
+        type: "error",
+        message: error instanceof Error ? error.message : "An error occurred while finding deleted variables"
+      });
+    }
   } else if (msg.type === "select") {
     const node = (await figma.getNodeByIdAsync(msg.id)) as SceneNode;
     if (node) {

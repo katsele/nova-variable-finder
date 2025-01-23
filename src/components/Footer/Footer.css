@@ -1,0 +1,16 @@
+footer {
+    padding: 12px 0px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--figma-color-text-secondary);
+    background-color: var(--figma-color-bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .heart {
+    color: var(--figma-color-icon-danger);
+  }
