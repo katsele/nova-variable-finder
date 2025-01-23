@@ -1,4 +1,13 @@
 /**
+ * This module provides utilities for finding and navigating to nodes in the Figma document
+ * that use specific variables. It includes functions for:
+ * - Finding nodes that use a particular variable
+ * - Getting the full path/name of a node
+ * - Switching the viewport to focus on a specific node
+ */
+
+
+/**
  * Finds all nodes in the document that use a specific variable.
  * @param variableId - The ID of the variable to search for
  * @returns Promise<SceneNode[]> Array of nodes using the variable

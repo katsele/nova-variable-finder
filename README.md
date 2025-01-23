@@ -5,10 +5,25 @@ A Figma plugin that helps you find and locate nodes that use specific Figma vari
 
 ## Features
 
+### Node Finder
 - Search for nodes using a variable ID (e.g. `VariableID:1:335`)
 - Search for nodes using a variable name
 - Click on results to select and zoom to the node in your document
 - Supports all types of variable bindings
+
+### Deleted Variable Finder
+Search for deleted variables in your document. Deleted variables are the variables that have been deleted from your variables collection but are referenced in somewhere in your document. 
+
+> Note: This feature uses the Figma API to search for deleted variables. Unfortunately this API is only available for Entreprise tier client.
+
+#### How to use
+1. Open the plugin
+2. Click on the "Deleted Variable Finder" tab
+3. Provide the your file ID and your personal access token
+4. Click on the "Search" button
+5. The plugin will search for deleted variables in your document and display the results in the "Results" section
+6. Click on a variable name to search for all the nodes that use this variable in your document
+7. Click on a node to select and zoom to the node in your document
 
 ## Installation & Usage
 

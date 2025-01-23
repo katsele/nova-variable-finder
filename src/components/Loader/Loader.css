@@ -1,0 +1,25 @@
+.loader {
+  color: var(--figma-color-text-secondary);
+  text-align: left;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.loader::before {
+  content: "";
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--figma-color-border-brand);
+  border-radius: 100%;
+  border-top-color: transparent;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
