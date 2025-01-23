@@ -1,6 +1,6 @@
 {
   "name": "nova-variable-finder",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "Find a layer based on a variable ID",
   "main": "code.js",
   "scripts": {
