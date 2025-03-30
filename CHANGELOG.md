@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.2.0](https://github.com/katsele/nova-variable-finder/compare/v2.1.0...v2.2.0) (2025-03-30)
+
+
+### Features
+
+* **variableFinder:** save token && add detach functionnality ([10aef1e](https://github.com/katsele/nova-variable-finder/commit/10aef1e6b8cd6750cc7e21dc96ee9d543e38e211))
+
 ## [2.1.0](https://github.com/katsele/nova-variable-finder/compare/v2.0.2...v2.1.0) (2025-01-23)
 
 
