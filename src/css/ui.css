@@ -67,7 +67,7 @@ a {
   cursor: pointer;
 }
 
-input {
+input:not([type="checkbox"]) {
   display: flex;
   width: 100%;
   padding: 4px;
@@ -86,6 +86,38 @@ input {
 input:focus-visible {
   border: 1px solid var(--figma-color-border-brand);
   outline: none;
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  padding: 0;
+  margin: 0;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  display: block;
+  width: 16px;
+  height: 16px;
+  background: var(--figma-color-bg-hover);
+  border-radius: 4px;
+  border: 1px solid var(--figma-color-border);
+}
+
+input[type="checkbox"]:checked::before {
+  background: var(--figma-color-bg-brand);
+  border: 1px solid var(--figma-color-border-brand);
+  background-image: url('data:image/svg+xml,%3Csvg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath fill-rule="evenodd" clip-rule="evenodd" d="M11.2519 4.5681C11.4905 4.70724 11.571 5.0134 11.4319 5.25193L7.9319 11.2519C7.84975 11.3928 7.7041 11.4847 7.54163 11.4983C7.37916 11.5118 7.22028 11.4453 7.1159 11.3201L4.6159 8.32008C4.43912 8.10794 4.46778 7.79266 4.67992 7.61588C4.89206 7.4391 5.20734 7.46776 5.38412 7.6799L7.42751 10.132L10.5681 4.74805C10.7073 4.50953 11.0134 4.42896 11.2519 4.5681Z" fill="white" fill-opacity="0.9"/%3E%3C/svg%3E');
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.remember-token {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+  margin: 8px 0;
 }
 
 button {
@@ -170,4 +202,43 @@ button:disabled {
   cursor: nwse-resize;
   background: linear-gradient(135deg, transparent 50%, var(--figma-color-border) 50%);
   z-index: 1000;
+}
+
+.token-input-container {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  position: relative;
+}
+
+.token-input-container input {
+  flex: 1;
+}
+
+.token-input-container input:disabled {
+  background: var(--figma-color-bg-disabled);
+  color: var(--figma-color-text-secondary);
+}
+
+.clear-token-btn {
+  padding: 4px;
+  border-radius: 4px;
+  color: var(--figma-color-text);
+  background: var(--figma-color-bg);
+  aspect-ratio: 1;
+}
+
+.clear-token-btn:hover {
+  background: var(--figma-color-bg-hover);
+}
+
+.node-results-sublist .result-item {
+  padding-left: 24px;
+}
+
+.detach-variable {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
 }

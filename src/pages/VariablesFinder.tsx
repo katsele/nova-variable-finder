@@ -1,6 +1,6 @@
 import * as React from "react";
 import { DeletedVariable } from "../utils/deleted-variables-finder";
-import { ResultList, ResultListItem } from "../components";
+import { Icon, ResultList, ResultListItem } from "../components";
 import { Loader } from "../components/Loader/Loader";
 
 interface NodeSearchResult {
@@ -11,9 +11,12 @@ interface SearchFormProps {
   figmaToken: string;
   fileKey: string;
   isLoading: boolean;
+  hasStoredToken: boolean;
   onTokenChange: (token: string) => void;
   onFileKeyChange: (key: string) => void;
+  onRememberTokenChange: (remember: boolean) => void;
   onSearch: () => void;
+  onClearToken: () => void;
 }
 
 const SearchForm: React.FC<SearchFormProps> = React.memo(
@@ -21,9 +24,12 @@ const SearchForm: React.FC<SearchFormProps> = React.memo(
     figmaToken,
     fileKey,
     isLoading,
+    hasStoredToken,
     onTokenChange,
     onFileKeyChange,
+    onRememberTokenChange,
     onSearch,
+    onClearToken,
   }) => (
     <div className="search-form">
       <input
@@ -32,12 +38,31 @@ const SearchForm: React.FC<SearchFormProps> = React.memo(
         onChange={(e) => onFileKeyChange(e.target.value)}
         placeholder="Enter the Figma file key"
       />
-      <input
-        type="password"
-        value={figmaToken}
-        onChange={(e) => onTokenChange(e.target.value)}
-        placeholder="Enter your Figma access token"
-      />
+      <div className="token-input-container">
+        <input
+          type="password"
+          value={figmaToken}
+          onChange={(e) => onTokenChange(e.target.value)}
+          placeholder="Enter your Figma access token"
+          disabled={hasStoredToken}
+        />
+        {hasStoredToken && (
+          <button className="clear-token-btn" onClick={onClearToken}>
+            <Icon name="Trash" />
+          </button>
+        )}
+      </div>
+      {!hasStoredToken && (
+        <div className="remember-token">
+          <input 
+            type="checkbox" 
+          id="remember-token" 
+          onChange={(e) => onRememberTokenChange(e.target.checked)}
+          disabled={hasStoredToken}
+        />
+          <label htmlFor="remember-token">Remember token</label>
+        </div>
+      )}
       <button onClick={onSearch} disabled={isLoading}>
         {isLoading ? "Searching..." : "Find Deleted Variables"}
       </button>
@@ -51,10 +76,11 @@ interface VariableResultsProps {
   nodes: NodeSearchResult | undefined;
   onSearch: (id: string) => void;
   onNodeClick: (id: string) => void;
+  onDetachVariable: (id: string) => void;
 }
 
 const VariableResults: React.FC<VariableResultsProps> = React.memo(
-  ({ variable, isLoading, nodes, onSearch, onNodeClick }) => (
+  ({ variable, isLoading, nodes, onSearch, onNodeClick, onDetachVariable }) => (
     <React.Fragment>
       <ResultListItem
         icon="Variable"
@@ -71,14 +97,18 @@ const VariableResults: React.FC<VariableResultsProps> = React.memo(
           {nodes.nodes.length === 0 ? (
             <div className="no-results">No nodes found using this variable</div>
           ) : (
-            <ResultList>
+            <ResultList className="node-results-sublist">
               {nodes.nodes.map((node, nodeIndex) => (
+                <>
                 <ResultListItem
                   key={`${variable.id}-node-${nodeIndex}`}
                   content={node.name.split(" > ").pop() || node.name}
                   icon="Frame"
                   onClick={() => onNodeClick(node.id)}
-                />
+                >
+                  <Icon key={`${variable.id}-detach`} name="Detach" className="detach-variable" onClick={() => onDetachVariable(node.id)} />
+                </ResultListItem>
+                </>
               ))}
             </ResultList>
           )}
@@ -91,6 +121,8 @@ const VariableResults: React.FC<VariableResultsProps> = React.memo(
 export default function VariablesFinder() {
   const [figmaToken, setFigmaToken] = React.useState("");
   const [fileKey, setFileKey] = React.useState("");
+  const [rememberToken, setRememberToken] = React.useState(false);
+  const [hasStoredToken, setHasStoredToken] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(true);
   const [deletedVariables, setDeletedVariables] = React.useState<
     DeletedVariable[] | null
@@ -125,11 +157,12 @@ export default function VariablesFinder() {
           type: "find-deleted-variables",
           accessToken: figmaToken,
           fileKey: fileKey,
+          rememberToken: rememberToken,
         },
       },
       "*"
     );
-  }, [figmaToken, fileKey]);
+  }, [figmaToken, fileKey, rememberToken]);
 
   const handleSearchNodes = React.useCallback((variableId: string) => {
     setSearchingVariableId(variableId);
@@ -143,6 +176,36 @@ export default function VariablesFinder() {
   const handleNodeClick = React.useCallback((nodeId: string) => {
     parent.postMessage({ pluginMessage: { type: "select", id: nodeId } }, "*");
   }, []);
+  
+  const handleClearToken = React.useCallback(() => {
+    parent.postMessage(
+      { pluginMessage: { type: "clear-token" } },
+      "*"
+    );
+  }, []);
+
+  const handleDetachVariable = React.useCallback((nodeId: string) => {
+    parent.postMessage(
+      { pluginMessage: { type: "detach-variable", id: nodeId } },
+      "*"
+    );   
+    
+    // Find the variable ID by searching through node results
+    const variableId = Object.keys(nodeResults).find(varId => 
+      nodeResults[varId]?.nodes.some(node => node.id === nodeId)
+    );
+    
+    // If found, update only that specific variable's nodes
+    if (variableId) {
+      setNodeResults(prev => ({
+        ...prev,
+        [variableId]: {
+          ...prev[variableId],
+          nodes: prev[variableId].nodes.filter(node => node.id !== nodeId)
+        }
+      }));
+    }
+  }, [nodeResults]);
 
   React.useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -153,25 +216,46 @@ export default function VariablesFinder() {
       } else if (message.type === "error") {
         setIsLoadingDeleted(false);
         setError(message.message);
-      } else if (message.type === "variableResults" && searchingVariableId) {
-        setIsLoadingNodes((prev) => ({
-          ...prev,
-          [searchingVariableId]: false,
-        }));
-        setNodeResults((prev) => ({
-          ...prev,
-          [searchingVariableId]: message,
-        }));
+      } else if (message.type === "variableResults") {
+        const varId = message.variableId || searchingVariableId;
+        if (varId) {
+          setIsLoadingNodes((prev) => ({
+            ...prev,
+            [varId]: false,
+          }));
+          setNodeResults((prev) => ({
+            ...prev,
+            [varId]: message,
+          }));
+        }
+      } else if (message.type === "stored-token") {
+        console.log("UI received stored token from plugin");
+        setFigmaToken(message.token);
+        setHasStoredToken(true);
+      } else if (message.type === "token-cleared") {
+        console.log("UI received token cleared notification");
+        setFigmaToken("");
+        setHasStoredToken(false);
+        setRememberToken(false);
       }
     };
 
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
-  }, [searchingVariableId]);
+  }, [searchingVariableId, handleSearchNodes]);
+
+  // Request token on mount
+  React.useEffect(() => {
+    console.log("Component mounted, requesting token status");
+    parent.postMessage(
+      { pluginMessage: { type: "get-stored-token" } },
+      "*"
+    );
+  }, []);
 
   return (
     <section>
-      {showAlert && (
+      {showAlert && !hasStoredToken && (
         <div className="alert-message">
           <h2>Before you begin</h2>
           <p>
@@ -185,9 +269,12 @@ export default function VariablesFinder() {
         figmaToken={figmaToken}
         fileKey={fileKey}
         isLoading={isLoadingDeleted}
+        hasStoredToken={hasStoredToken}
         onTokenChange={setFigmaToken}
         onFileKeyChange={setFileKey}
+        onRememberTokenChange={setRememberToken}
         onSearch={handleFindDeletedVariables}
+        onClearToken={handleClearToken}
       />
       {error && <div className="error-message">{error}</div>}
       <div className="results">
@@ -210,6 +297,7 @@ export default function VariablesFinder() {
                       nodes={nodeResults[variable.id]}
                       onSearch={handleSearchNodes}
                       onNodeClick={handleNodeClick}
+                      onDetachVariable={handleDetachVariable}
                     />
                   ))}
                 </ResultList>
