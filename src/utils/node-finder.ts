@@ -69,9 +69,6 @@ export async function findNodesUsingVariable(
 
     for (const node of pageNodes) {
       if (checkNode(node)) {
-        console.log(
-          `Found node using variable: ${node.name} on (${page.name})`
-        );
         results.push({ node, pageName: page.name });
       }
     }
