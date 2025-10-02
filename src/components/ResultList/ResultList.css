@@ -5,6 +5,18 @@
   gap: 8px;
 }
 
+summary {
+  cursor: pointer;
+  font-weight: bold;
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  text-align: start;
+  font-size: 0.875rem;
+  &:hover {
+    background-color: var(--figma-color-bg-hover);
+  }
+}
+
 .result-item {
   position: relative;
   display: flex;

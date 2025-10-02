@@ -9,13 +9,37 @@ interface ResultListItemProps {
   children?: React.ReactNode;
 }
 
-export function ResultList({ children, className }: { children: React.ReactNode, className?: string }) {
+export function ResultList({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return <ul className={`results-list ${className}`}>{children}</ul>;
 }
 
-export function ResultListItem({ content, icon = "Frame", onClick, children }: ResultListItemProps) {
+export function ResultListItem({
+  content,
+  icon = "Frame",
+  onClick,
+  children,
+}: ResultListItemProps) {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLLIElement>) => {
+    if ((event.key === "Enter" || event.key === " ") && onClick) {
+      event.preventDefault();
+      onClick();
+    }
+  };
+
   return (
-    <li className="result-item" onClick={onClick}>
+    <li
+      className="result-item"
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+    >
       <Icon name={icon} color="var(--figma-color-icon-tertiary)" />
       <span>{content}</span>
       {children}
