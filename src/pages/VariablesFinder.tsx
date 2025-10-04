@@ -98,10 +98,7 @@ const VariableResults: React.FC<VariableResultsProps> = React.memo(
           {nodes.nodes.length === 0 ? (
             <div className="no-results">No nodes found using this variable</div>
           ) : (
-            <div
-              className="node-results-sublist"
-              style={{ marginLeft: "1rem" }}
-            >
+            <div className="page-group-container">
               {Object.entries(nodes.nodesByPage).map(
                 ([pageName, pageNodes]) => (
                   <details key={pageName} open>

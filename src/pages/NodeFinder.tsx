@@ -66,13 +66,7 @@ export default function NodeFinder() {
                 {Object.entries(results.nodesByPage).map(
                   ([pageName, pageNodes]) => (
                     <details key={pageName} open>
-                      <summary
-                        style={{
-                          cursor: "pointer",
-                          fontWeight: "bold",
-                          marginBottom: "0.5rem",
-                        }}
-                      >
+                      <summary>
                         {pageName} ({pageNodes.length}{" "}
                         {pageNodes.length === 1 ? "node" : "nodes"})
                       </summary>
