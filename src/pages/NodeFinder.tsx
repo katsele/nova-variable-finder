@@ -1,11 +1,15 @@
 import * as React from "react";
 import { Loader } from "../components";
-import { ResultList, ResultListItem } from "../components/ResultList/ResultList";
+import {
+  ResultList,
+  ResultListItem,
+} from "../components/ResultList/ResultList";
 
 export default function NodeFinder() {
   const [searchValue, setSearchValue] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
   const [results, setResults] = React.useState<{
+    nodesByPage: Record<string, Array<{ id: string; name: string }>>;
     nodes: Array<{ id: string; name: string }>;
   } | null>(null);
 
@@ -47,9 +51,7 @@ export default function NodeFinder() {
         {isLoading ? "Searching..." : "Find Nodes"}
       </button>
       <div className="results">
-        {isLoading && (
-          <Loader label="Searching for nodes..." />
-        )}
+        {isLoading && <Loader label="Searching for nodes..." />}
         {!isLoading && results && (
           <>
             {results.nodes.length === 0 ? (
@@ -61,14 +63,28 @@ export default function NodeFinder() {
                 <h2>
                   We found {results.nodes.length} nodes using this variable
                 </h2>
-                <ResultList>
-                  {results.nodes.map((node, index) => {
-                    const nodeName = node.name.split(" > ").pop();
-                    return (
-                        <ResultListItem key={`node-${index}`} content={`Variable used in: ${nodeName}`} onClick={() => handleNodeClick(node.id)}/>
-                    );
-                  })}
-                </ResultList>
+                {Object.entries(results.nodesByPage).map(
+                  ([pageName, pageNodes]) => (
+                    <details key={pageName} open>
+                      <summary>
+                        {pageName} ({pageNodes.length}{" "}
+                        {pageNodes.length === 1 ? "node" : "nodes"})
+                      </summary>
+                      <ResultList className="results-list">
+                        {pageNodes.map((node, index) => {
+                          const nodeName = node.name.split(" > ").pop();
+                          return (
+                            <ResultListItem
+                              key={`node-${pageName}-${index}`}
+                              content={`Variable used in: ${nodeName}`}
+                              onClick={() => handleNodeClick(node.id)}
+                            />
+                          );
+                        })}
+                      </ResultList>
+                    </details>
+                  )
+                )}
               </>
             )}
           </>

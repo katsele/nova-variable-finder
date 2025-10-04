@@ -5,6 +5,56 @@
   gap: 8px;
 }
 
+details {
+  margin-bottom: 0.5rem;
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 500;
+  padding-block: 0.5rem;
+  padding-inline: 0.25rem;
+  text-align: start;
+  font-size: 11px;
+  list-style: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 4px;
+  
+  &:hover {
+    background-color: var(--figma-color-bg-hover);
+  }
+}
+
+/* Hide default disclosure triangle */
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Custom Figma-style chevron */
+summary::before {
+  content: "";
+  width: 3px;
+  height: 3px;
+  border-right: 1px solid var(--figma-color-icon-tertiary);
+  border-bottom: 1px solid var(--figma-color-icon-tertiary);
+  transform: rotate(-45deg);
+  transition: transform 0.1s ease-out;
+  flex-shrink: 0;
+  margin-right: 8px;
+  margin-top: -1px;
+}
+
+details[open] > summary::before {
+  transform: rotate(45deg);
+}
+
+.page-group-container {
+  margin-left: 1rem;
+}
+
 .result-item {
   position: relative;
   display: flex;
@@ -16,6 +66,10 @@
   border-radius: 6px;
   cursor: default;
   transition: background-color 0.2s;
+}
+
+details .result-item {
+  padding-left: 16px;
 }
 
 .result-item span {

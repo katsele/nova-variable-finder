@@ -4,6 +4,7 @@ import { Icon, ResultList, ResultListItem } from "../components";
 import { Loader } from "../components/Loader/Loader";
 
 interface NodeSearchResult {
+  nodesByPage: Record<string, Array<{ id: string; name: string }>>;
   nodes: Array<{ id: string; name: string }>;
 }
 
@@ -54,12 +55,12 @@ const SearchForm: React.FC<SearchFormProps> = React.memo(
       </div>
       {!hasStoredToken && (
         <div className="remember-token">
-          <input 
-            type="checkbox" 
-          id="remember-token" 
-          onChange={(e) => onRememberTokenChange(e.target.checked)}
-          disabled={hasStoredToken}
-        />
+          <input
+            type="checkbox"
+            id="remember-token"
+            onChange={(e) => onRememberTokenChange(e.target.checked)}
+            disabled={hasStoredToken}
+          />
           <label htmlFor="remember-token">Remember token</label>
         </div>
       )}
@@ -97,20 +98,35 @@ const VariableResults: React.FC<VariableResultsProps> = React.memo(
           {nodes.nodes.length === 0 ? (
             <div className="no-results">No nodes found using this variable</div>
           ) : (
-            <ResultList className="node-results-sublist">
-              {nodes.nodes.map((node, nodeIndex) => (
-                <>
-                <ResultListItem
-                  key={`${variable.id}-node-${nodeIndex}`}
-                  content={node.name.split(" > ").pop() || node.name}
-                  icon="Frame"
-                  onClick={() => onNodeClick(node.id)}
-                >
-                  <Icon key={`${variable.id}-detach`} name="Detach" className="detach-variable" onClick={() => onDetachVariable(node.id)} />
-                </ResultListItem>
-                </>
-              ))}
-            </ResultList>
+            <div className="page-group-container">
+              {Object.entries(nodes.nodesByPage).map(
+                ([pageName, pageNodes]) => (
+                  <details key={pageName} open>
+                    <summary>
+                      {pageName} ({pageNodes.length}{" "}
+                      {pageNodes.length === 1 ? "node" : "nodes"})
+                    </summary>
+                    <ResultList className="node-results-sublist">
+                      {pageNodes.map((node, nodeIndex) => (
+                        <ResultListItem
+                          key={`${variable.id}-${pageName}-node-${nodeIndex}`}
+                          content={node.name.split(" > ").pop() || node.name}
+                          icon="Frame"
+                          onClick={() => onNodeClick(node.id)}
+                        >
+                          <Icon
+                            key={`${variable.id}-${pageName}-detach-${nodeIndex}`}
+                            name="Detach"
+                            className="detach-variable"
+                            onClick={() => onDetachVariable(node.id)}
+                          />
+                        </ResultListItem>
+                      ))}
+                    </ResultList>
+                  </details>
+                )
+              )}
+            </div>
           )}
         </>
       )}
@@ -176,36 +192,36 @@ export default function VariablesFinder() {
   const handleNodeClick = React.useCallback((nodeId: string) => {
     parent.postMessage({ pluginMessage: { type: "select", id: nodeId } }, "*");
   }, []);
-  
+
   const handleClearToken = React.useCallback(() => {
-    parent.postMessage(
-      { pluginMessage: { type: "clear-token" } },
-      "*"
-    );
+    parent.postMessage({ pluginMessage: { type: "clear-token" } }, "*");
   }, []);
 
-  const handleDetachVariable = React.useCallback((nodeId: string) => {
-    parent.postMessage(
-      { pluginMessage: { type: "detach-variable", id: nodeId } },
-      "*"
-    );   
-    
-    // Find the variable ID by searching through node results
-    const variableId = Object.keys(nodeResults).find(varId => 
-      nodeResults[varId]?.nodes.some(node => node.id === nodeId)
-    );
-    
-    // If found, update only that specific variable's nodes
-    if (variableId) {
-      setNodeResults(prev => ({
-        ...prev,
-        [variableId]: {
-          ...prev[variableId],
-          nodes: prev[variableId].nodes.filter(node => node.id !== nodeId)
-        }
-      }));
-    }
-  }, [nodeResults]);
+  const handleDetachVariable = React.useCallback(
+    (nodeId: string) => {
+      parent.postMessage(
+        { pluginMessage: { type: "detach-variable", id: nodeId } },
+        "*"
+      );
+
+      // Find the variable ID by searching through node results
+      const variableId = Object.keys(nodeResults).find((varId) =>
+        nodeResults[varId]?.nodes.some((node) => node.id === nodeId)
+      );
+
+      // If found, update only that specific variable's nodes
+      if (variableId) {
+        setNodeResults((prev) => ({
+          ...prev,
+          [variableId]: {
+            ...prev[variableId],
+            nodes: prev[variableId].nodes.filter((node) => node.id !== nodeId),
+          },
+        }));
+      }
+    },
+    [nodeResults]
+  );
 
   React.useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -247,10 +263,7 @@ export default function VariablesFinder() {
   // Request token on mount
   React.useEffect(() => {
     console.log("Component mounted, requesting token status");
-    parent.postMessage(
-      { pluginMessage: { type: "get-stored-token" } },
-      "*"
-    );
+    parent.postMessage({ pluginMessage: { type: "get-stored-token" } }, "*");
   }, []);
 
   return (
